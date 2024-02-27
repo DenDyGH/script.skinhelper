@@ -1,8 +1,9 @@
 import sys
+import xbmc
 import xbmcvfs
 from PIL import Image
 
-SKIN_PATH = 'special://skin'
+SKIN_PATH = 'special://userdata'
 
 
 def hex_to_rgb(h):
@@ -13,7 +14,12 @@ class Main:
     def __init__(self):
         self.handle = sys.argv
         self.skin_path = xbmcvfs.translatePath(SKIN_PATH)
-        self.gradient_path = self.skin_path + 'media/common/button_texture.png'
+        self.gradient_path = self.skin_path + 'addon_data/script.skinhelper/button_texture.png'
+        
+        self.skinhelper_path = self.skin_path + 'addon_data/script.skinhelper/'
+
+        if not xbmcvfs.exists(self.skinhelper_path):
+            xbmcvfs.mkdir(self.skinhelper_path)
 
     def init(self):
         success = xbmcvfs.exists(self.skin_path)
@@ -30,6 +36,11 @@ class Main:
             if h == 'monochrome=true':
                 try:
                     self.generate_monochrome()
+                except Exception:
+                    pass
+            if h == 'reload=true':
+                try:
+                    xbmc.executebuiltin('ReloadSkin()')
                 except Exception:
                     pass
 
